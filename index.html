@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>พื้นที่ระบายใจ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+  <h2>พื้นที่ระบายใจ</h2>
+  <textarea id="message" rows="6" style="width:100%;" placeholder="เขียนความรู้สึกของคุณที่นี่..."></textarea>
+  <br><br>
+  <button onclick="sendMessage()">อยากให้ครูอ่าน</button>
+
+  <p id="status"></p>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } 
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyAi6HOKOQuOE0nwbhEX4iFfX1EBh0_CV9Y",
+  authDomain: "pakjai-f2a10.firebaseapp.com",
+  projectId: "pakjai-f2a10",
+  storageBucket: "pakjai-f2a10.firebasestorage.app",
+  messagingSenderId: "782500401018",
+  appId: "1:782500401018:web:920796a06d5e42905b10c3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.sendMessage = async function () {
+      const text = document.getElementById("message").value.trim();
+      if (!text) return;
+
+      try {
+        await addDoc(collection(db, "messages"), {
+          text: text,
+          createdAt: serverTimestamp()
+        });
+        document.getElementById("status").innerText = "ส่งข้อความแล้ว 🌱";
+        document.getElementById("message").value = "";
+      } catch (e) {
+        document.getElementById("status").innerText = "ส่งไม่สำเร็จ";
+      }
+    }
+  </script>
+
+</body>
+</html>
